@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: miusuario
+      POSTGRES_PASSWORD: mipassword
+      POSTGRES_DB: miapp
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    container_name: php_backend
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - "4000:80"
+    depends_on:
+      - db
+
+  react:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.react
+    container_name: react_frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - php
+
+volumes:
+  db_data:
