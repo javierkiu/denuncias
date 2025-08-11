@@ -51,7 +51,7 @@ Esto creará y levantará 3 contenedores:
 ## 🌐 Acceso a los servicios
 
 - **Frontend (React)** → [http://localhost:3000](http://localhost:3000)  
-- **Backend (PHP API)** → [http://localhost:8000](http://localhost:8000)  
+- **Backend (PHP API)** → [http://localhost:4000](http://localhost:4000)  
 - **Base de datos PostgreSQL**:
   - Host: `localhost`
   - Puerto: `5432`
