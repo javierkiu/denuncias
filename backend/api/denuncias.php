@@ -52,6 +52,39 @@ switch ($method) {
         echo json_encode(["message" => "Denuncia creada", "id" => $id]);
         break;
 
+    // 📌 Editar denuncia
+    case 'PUT':
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (empty($data['id'])) {
+            http_response_code(400);
+            echo json_encode(["error" => "Se requiere el ID"]);
+            break;
+        }
+
+        $fields = [];
+        $params = [':id' => $data['id']];
+
+        foreach (['tipo', 'ubicacion', 'descripcion', 'fecha', 'foto_url'] as $campo) {
+            if (isset($data[$campo])) {
+                $fields[] = "$campo = :$campo";
+                $params[":$campo"] = $data[$campo];
+            }
+        }
+
+        if (empty($fields)) {
+            http_response_code(400);
+            echo json_encode(["error" => "No hay campos para actualizar"]);
+            break;
+        }
+
+        $sql = "UPDATE denuncias SET " . implode(", ", $fields) . " WHERE id = :id";
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        echo json_encode(["message" => "Denuncia actualizada"]);
+        break;
+    
     default:
         http_response_code(405);
         echo json_encode(["error" => "Método no permitido"]);
