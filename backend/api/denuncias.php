@@ -26,6 +26,39 @@ try {
 $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
+  // 📌 Obtener denuncias (con o sin filtros)
+    case 'GET':
+        if (isset($_GET['id'])) {
+            // Obtener una denuncia por ID
+            $stmt = $pdo->prepare("SELECT * FROM denuncias WHERE id = :id");
+            $stmt->execute([':id' => $_GET['id']]);
+            $denuncia = $stmt->fetch(PDO::FETCH_ASSOC);
+            echo json_encode($denuncia ?: []);
+        } else {
+            // Aplicar filtros si existen
+            $query = "SELECT * FROM denuncias WHERE 1=1";
+            $params = [];
+
+            if (!empty($_GET['tipo'])) {
+                $query .= " AND LOWER(tipo) = LOWER(:tipo)";
+                $params[':tipo'] = $_GET['tipo'];
+            }
+            if (!empty($_GET['ubicacion'])) {
+                $query .= " AND LOWER(ubicacion) LIKE LOWER(:ubicacion)";
+                $params[':ubicacion'] = "%" . $_GET['ubicacion'] . "%";
+            }
+            if (!empty($_GET['fecha'])) {
+                $query .= " AND DATE(fecha) = :fecha";
+                $params[':fecha'] = $_GET['fecha'];
+            }
+
+            $query .= " ORDER BY fecha DESC";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute($params);
+            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+        }
+        break;
+
     // 📌 Crear denuncia
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
