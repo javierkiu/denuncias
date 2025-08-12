@@ -118,6 +118,22 @@ switch ($method) {
         echo json_encode(["message" => "Denuncia actualizada"]);
         break;
     
+    // 📌 Eliminar denuncia
+    case 'DELETE':
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (empty($data['id'])) {
+            http_response_code(400);
+            echo json_encode(["error" => "Se requiere el ID"]);
+            break;
+        }
+
+        $stmt = $pdo->prepare("DELETE FROM denuncias WHERE id = :id");
+        $stmt->execute([':id' => $data['id']]);
+
+        echo json_encode(["message" => "Denuncia eliminada"]);
+        break;
+    
     default:
         http_response_code(405);
         echo json_encode(["error" => "Método no permitido"]);
