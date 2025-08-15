@@ -36,8 +36,8 @@ export default function MapSelector({ onLocationSelected }) {
         center={[1.83, -78.18]} 
         zoom={2} 
         style={{ 
-            height: "600px", 
-            width: "60%",
+            height: "88.2vh", 
+            width: "65%",
         }}
         maxBounds={CountryBounds}
         maxBoundsViscosity={1.0}

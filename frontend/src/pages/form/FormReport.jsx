@@ -17,8 +17,8 @@ export const FormReport = () => {
       >
         <Box 
           sx={{
-            width: "40%",
-            bgcolor: "#8E8E"
+            width: "35%",
+            bgcolor: "#fff"
           }}
         >
         </Box>
