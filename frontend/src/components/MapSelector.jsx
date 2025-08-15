@@ -1,52 +1,73 @@
-import { useState } from 'react';
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
+import { useEffect, useState } from 'react';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-
-// delete L.Icon.Default.prototype._getIconUrl;
-// L.Icon.Default.mergeOptions({
-//   iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-//   iconUrl: require('leaflet/dist/images/marker-icon.png'),
-//   shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
-// });
+import "leaflet-control-geocoder/dist/Control.Geocoder.css";
+import "leaflet-control-geocoder";
 
 const CountryBounds = [
   [-5.01, -92.01], // Southwest corner
   [2.26, -75.19],  // Northeast corner
 ]
-function LocationMarker({ onLocationSelected }) {
-  const [position, setPosition] = useState(null);
+function LocationMarker({ position }) {
+  if (!position) return null;
 
+  return <Marker position={position}/>;
+}
+
+const SearchControl= ({setPosition}) => {
+  const map = useMap();
+
+  useEffect(()=> {
+    const geocoder = L.Control.geocoder({
+    defaultMarkGeocode: false,
+  }).on('markgeocode', function(e) {
+      const {center} = e.geocode;
+      map.setView(center, 16);
+      setPosition([center.lat, center.lng]);
+    }).addTo(map);
+
+    return () => map.removeControl(geocoder);
+  }, [map, setPosition]);
+
+  return null;
+}
+
+const MapClick = ({setPosition}) => {
   useMapEvents({
     click(e) {
-      const { lat, lng } = e.latlng;
+      const {lat, lng} = e.latlng;
       setPosition([lat, lng]);
-      onLocationSelected(lat, lng);
-    },
+    }
   });
-
-  return position === null ? null : (
-    <Marker position={position}></Marker>
-  );
+  return null;
 }
 
 export default function MapSelector({ onLocationSelected }) {
+  const [position, setPosition] = useState(null);
+
+  useEffect(() => {
+    if (position) {
+      onLocationSelected(position[0], position[1]);
+    }
+  }, [position, onLocationSelected]);
+
   return (
     <MapContainer 
-        center={[1.83, -78.18]} 
-        zoom={2} 
-        style={{ 
-            height: "88.2vh", 
-            width: "65%",
-        }}
+        center={[-2.170998, -79.922359]} 
+        zoom={12} 
+        minZoom={5}
         maxBounds={CountryBounds}
         maxBoundsViscosity={1.0}
+        style={{ height: "89.4vh", width: "65%", }}
     >
       <TileLayer
         attribution='&copy; OpenStreetMap contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <LocationMarker onLocationSelected={onLocationSelected} />
+      <SearchControl setPosition={setPosition}/>
+      <MapClick setPosition={setPosition}/>
+      <LocationMarker position={position} />
     </MapContainer>
   );
 }
