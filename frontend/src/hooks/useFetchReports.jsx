@@ -9,7 +9,7 @@ export const useFetchReports = () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}`);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/denuncias.php`);
             if (!response.ok) throw new Error("Error fetching data");
             const result = await response.json();
             setReports(result);

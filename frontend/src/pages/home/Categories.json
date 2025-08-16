@@ -1,0 +1,37 @@
+[
+    {
+        "category": "Contaminación",
+        "subcategories": [
+            "Basura en la vía pública",
+            "Vertido de desechos en ríos o mares", 
+            "Contaminación del aire (humo, gases tóxicos)"
+        ]
+    },
+    {
+        "category":"Incendios forestales",
+        "subcategories":[
+            "Quema de pastizales",
+            "Incendio activo",
+            "Fuegos provocados por actividades humanas",
+            "Uso ilegal de fuego en áreas protegidas"
+        ]
+    },
+    {
+        "category":"Minería ilegal",
+        "subcategories":[
+            "Extracción de minerales sin permiso",
+            "Uso de maquinaria en ríos",
+            "Tala asociada a minería",
+            "Presencia de campamentos ilegales"
+        ]
+    },
+    {
+        "category":"Protección de flora y fauna",
+        "subcategories":[
+            "Caza ilegal",
+            "Tráfico de especies",
+            "Tala ilegal de árboles",
+            "Daño a áreas protegidas"
+        ]
+    }
+]

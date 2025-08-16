@@ -1,25 +1,30 @@
 import { Button } from '@mui/material'
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-export const ContinueButton = (handleNext) => {
+export const ContinueButton = ({handleNext}) => {
   return (
     <Button 
       onClick={handleNext}
       sx={{
-        bgcolor: "#FFD000",
+        display: "flex",
+        gap: 1,
+        width: "48%",
+        background: "linear-gradient(rgb(255, 232, 128), rgb(255, 208, 0))",
         minWidth: '8rem',
         color:'#222222',
         fontFamily: "'Poppins', sans-serif",
-        fontWeight: 600,
+        fontWeight: 500,
         fontSize: {xs:'.875rem', md: '1rem'},
-        p: '.5rem 1rem',
+        p: '.438rem 1rem',
         borderRadius: '.5rem',
         textTransform: 'none',
         ":hover" : {
-          backgroundColor: "#FFC300",
+          filter: "brightness(95%)",
         }
       }}
     >
       Continuar
+      <ArrowForwardIosIcon sx={{width: "1.2rem"}}/>
     </Button>
   )
 }
