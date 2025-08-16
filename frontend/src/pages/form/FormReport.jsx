@@ -1,18 +1,23 @@
 import { useState } from "react"
 import MapSelector from "../../components/MapSelector"
-import { Box, FormControl, InputLabel, MenuItem, Select, Typography } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { GoBackButton } from "../../components/buttons/GoBackButton";
 import { ContinueButton } from "../../components/buttons/ContinueButton";
 import EastIcon from '@mui/icons-material/East';
 import Categories from "../../pages/home/Categories.json";
-import { Label } from "@mui/icons-material";
 import { PhotoUpload } from "../../components/PhotoUpload";
+import { SendDataModal } from "./modals/sendDataModal";
+import { useNavigate } from "react-router-dom";
 
 export const FormReport = () => {
   const [lat, setLat] = useState("");
   const [long, setLong] = useState("");
   const [category, setCategory] = useState("");
   const [subcategory, setSubCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const [isConfirmed, setIsConfirmed] = useState(false);
+  const navigate = useNavigate();
   const [formSteps, setFormSteps] = useState(1);
   console.log(lat);
   console.log(long);
@@ -24,6 +29,12 @@ export const FormReport = () => {
 
   const handleNext = () => {
     if (!category || !subcategory) return;
+    if (formSteps === 3 ) {
+      if(description.length > 0) {
+        setOpenModal(true);
+      }
+      return;
+    }
     setFormSteps((prev) => prev + 1);
   }
 
@@ -32,12 +43,25 @@ export const FormReport = () => {
     setFormSteps((prev) => prev - 1);
   }
 
+  const handleSendData = () => {
+    setIsConfirmed(true);
+    setTimeout(() => {
+      navigate("/view-reports");
+      setOpenModal(false);
+    }, 2000);
+  }
+
+  const handleChange = (e) => {
+    setDescription(e.target.value);
+  }
+
   return (
     <Box>
       <Box 
         sx={{
           display: 'flex',
           gap: 0,
+          height: "calc(100vh - 67.59px)",
         }}
       >
         <Box 
@@ -48,6 +72,8 @@ export const FormReport = () => {
             width: "35%",
             bgcolor: "#fff",
             mb: ".5rem",
+            height: "calc(100vh - 67.59px)",
+            overflow: "hidden",
           }}
         >
           <Box
@@ -55,7 +81,11 @@ export const FormReport = () => {
               display: "flex",
               flexDirection: "column",
               gap: ".5rem",
-              padding: "1rem 1rem"
+              padding: "1rem 1rem",
+              overflowY: "auto",
+              overflowX: "hidden",
+              flex: 1,
+              minHeight: 0,
             }}
           >
             <Typography
@@ -166,6 +196,50 @@ export const FormReport = () => {
                 <PhotoUpload />
               </>
             )}
+            {formSteps === 3 && (
+              <Box>
+                <Typography
+                  sx={{
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: {xs: ".85rem", md: ".925rem", lg: "1rem"},
+                    fontWeight: 500,
+                    color: "#222222",
+                  }}
+                >
+                  Descripción del problema
+                </Typography>
+                <Typography
+                  sx={{
+                    display: "flex",
+                    gap: ".5rem",
+                    fontFamily: "'Poppins', sans-serif",
+                    fontSize: {xs: ".85rem", md: ".925rem", lg: "1rem"},
+                    fontWeight: 400,
+                    color: "#8E8E8E",
+                  }}
+                >
+                  e.j.: 'En el Norte de Guayaquil el desecho de basura...'
+                </Typography>
+                <textarea 
+                  name="description"
+                  value={description}
+                  onChange={handleChange}
+                  style={{
+                    width: "100%",
+                    minWidth: "100%",
+                    maxWidth: "100%", 
+                    height: "15rem",
+                    resize: "vertical",
+                    boxSizing: "border-box",
+                    fontFamily: "'Poppins', sans-serif",
+                    padding: "0.5rem",
+                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                    borderRadius: ".25rem",
+                    fontSize: "1rem",
+                  }}
+                />
+              </Box>
+            )}
           </Box>
           <Box
             sx={{
@@ -173,10 +247,12 @@ export const FormReport = () => {
               gap: 1,
               justifyContent: 'space-between',
               paddingInline: "0.7rem",
+              paddingBottom: "1rem",
+              flexShrink: 0,
             }}
           >
             <GoBackButton handleBack={handleBack}/>
-            <ContinueButton handleNext={handleNext}/>
+            <ContinueButton handleNext={handleNext} name= {formSteps === 3 ? "Enviar": "Continuar"}/>
           </Box>
         </Box>
         <MapSelector onLocationSelected={(latitude, longitude) => {
@@ -184,6 +260,12 @@ export const FormReport = () => {
           setLong(longitude);
         }}/>
       </Box>
+      <SendDataModal 
+        handleOpenModal={openModal} 
+        handleCloseModal={() => setOpenModal(false)} 
+        handleConfirmation={handleSendData}
+        isConfirmed={isConfirmed}
+      />
     </Box>
   )
 }

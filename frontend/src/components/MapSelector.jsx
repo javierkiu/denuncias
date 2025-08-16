@@ -59,7 +59,7 @@ export default function MapSelector({ onLocationSelected }) {
         minZoom={5}
         maxBounds={CountryBounds}
         maxBoundsViscosity={1.0}
-        style={{ height: "88.5vh", width: "65%", }}
+        style={{ height: "calc(100vh - 67.59px)", width: "65%", }}
     >
       <TileLayer
         attribution='&copy; OpenStreetMap contributors'

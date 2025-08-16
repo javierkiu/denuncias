@@ -1,7 +1,7 @@
 import { Button } from '@mui/material'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-export const ContinueButton = ({handleNext}) => {
+export const ContinueButton = ({name, handleNext}) => {
   return (
     <Button 
       onClick={handleNext}
@@ -23,7 +23,7 @@ export const ContinueButton = ({handleNext}) => {
         }
       }}
     >
-      Continuar
+      {name}
       <ArrowForwardIosIcon sx={{width: "1.2rem"}}/>
     </Button>
   )
