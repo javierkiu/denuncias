@@ -39,17 +39,27 @@ switch ($method) {
             $query = "SELECT * FROM denuncias WHERE 1=1";
             $params = [];
 
-            if (!empty($_GET['tipo'])) {
-                $query .= " AND LOWER(tipo) = LOWER(:tipo)";
-                $params[':tipo'] = $_GET['tipo'];
+            if (!empty($_GET['categoria'])) {
+                $query .= " AND LOWER(categoria) = LOWER(:categoria)";
+                $params[':categoria'] = $_GET['categoria'];
             }
-            if (!empty($_GET['ubicacion'])) {
-                $query .= " AND LOWER(ubicacion) LIKE LOWER(:ubicacion)";
-                $params[':ubicacion'] = "%" . $_GET['ubicacion'] . "%";
+            if (!empty($_GET['subcategoria'])) {
+                $query .= " AND LOWER(subcategoria) = LOWER(:subcategoria)";
+                $params[':subcategoria'] = $_GET['subcategoria'];
             }
             if (!empty($_GET['fecha'])) {
                 $query .= " AND DATE(fecha) = :fecha";
                 $params[':fecha'] = $_GET['fecha'];
+            }
+            if (!empty($_GET['lat_min']) && !empty($_GET['lat_max'])) {
+                $query .= " AND latitud BETWEEN :lat_min AND :lat_max";
+                $params[":lat_min"] = floatval($_GET["lat_min"]);
+                $params[":lat_max"] = floatval($_GET["lat_max"]);
+            }
+            if (!empty($_GET['lng_min']) && !empty($_GET['lng_min'])) {
+                $query .= " AND longitud BETWEEN :lng_min AND :lng_max";
+                $params[":lng_min"] = floatval($_GET[":lng_min"]);
+                $params[":lng_max"] = floatval($_GET["lng_max"]);
             }
 
             $query .= " ORDER BY fecha DESC";
@@ -63,18 +73,53 @@ switch ($method) {
     case 'POST':
         $data = json_decode(file_get_contents("php://input"), true);
 
-        if (empty($data['tipo']) || empty($data['ubicacion']) || empty($data['descripcion'])) {
+        if (empty($data['categoria']) || empty($data['subcategoria']) || empty($data['descripcion']) || !isset($data['latitud']) || !isset($data['longitud'])) {
             http_response_code(400);
-            echo json_encode(["error" => "Faltan campos obligatorios"]);
+            echo json_encode(["error" => "Faltan campos obligatorios: categoria, subcategoria, descripcion, latitud, longitud"]);
             break;
         }
 
-        $stmt = $pdo->prepare("INSERT INTO denuncias (tipo, ubicacion, descripcion, fecha, foto_url)
-                               VALUES (:tipo, :ubicacion, :descripcion, :fecha, :foto_url)
+        $categorias_validas = [
+            'Contaminación' => [
+                "Basura en la vía pública",
+                "Vertido de desechos en ríos o mares", 
+                "Contaminación del aire (humo, gases tóxicos)"
+            ],
+            'Incendios forestales' => [
+                "Quema de pastizales",
+                "Incendio activo",
+                "Fuegos provocados por actividades humanas",
+                "Uso ilegal de fuego en áreas protegidas"
+            ],
+            'Minería ilegal' => [
+                "Extracción de minerales sin permiso",
+                "Uso de maquinaria en ríos",
+                "Tala asociada a minería",
+                "Presencia de campamentos ilegales"
+            ],
+            'Protección de flora y fauna' => [
+                "Caza ilegal",
+                "Tráfico de especies",
+                "Tala ilegal de árboles",
+                "Daño a áreas protegidas"
+            ]
+            ];
+
+        if (!isset($categorias_validas[$data['categoria']]) || 
+            !in_array($data['subcategoria'], $categorias_validas[$data['categoria']])) {
+            http_response_code(400);
+            echo json_encode(["error" => "No valid Category or Subcategory"]);
+            break;
+        }
+
+        $stmt = $pdo->prepare("INSERT INTO denuncias (categoria, subcategoria, latitud, longitud, descripcion, fecha, foto_url)
+                               VALUES (:categoria, :subcategoria, :latitud, :longitud, :descripcion, :fecha, :foto_url)
                                RETURNING id");
         $stmt->execute([
-            ':tipo' => $data['tipo'],
-            ':ubicacion' => $data['ubicacion'],
+            ':categoria' => $data['categoria'],
+            ':subcategoria' => $data['subcategoria'],
+            ':latitud' => floatval($data['latitud']),
+            ':longitud' => floatval($data['longitud']),
             ':descripcion' => $data['descripcion'],
             ':fecha' => $data['fecha'] ?? date('Y-m-d H:i:s'),
             ':foto_url' => $data['foto_url'] ?? null
@@ -82,7 +127,7 @@ switch ($method) {
 
         $id = $stmt->fetchColumn();
         http_response_code(201);
-        echo json_encode(["message" => "Denuncia creada", "id" => $id]);
+        echo json_encode(["message" => "Denuncia creada exitosamente", "id" => $id]);
         break;
 
     // 📌 Editar denuncia
@@ -98,10 +143,14 @@ switch ($method) {
         $fields = [];
         $params = [':id' => $data['id']];
 
-        foreach (['tipo', 'ubicacion', 'descripcion', 'fecha', 'foto_url'] as $campo) {
+        foreach (['categoria','subcategoria', 'latitud', 'longitud', 'descripcion', 'fecha', 'foto_url'] as $campo) {
             if (isset($data[$campo])) {
                 $fields[] = "$campo = :$campo";
-                $params[":$campo"] = $data[$campo];
+                if ($campo == 'latitud' || $campo == 'longitud') {
+                    $params[":$campo"] = floatval($data[$campo]);
+                } else {
+                    $params[":$campo"] = $data[$campo];
+                }
             }
         }
 
@@ -115,7 +164,7 @@ switch ($method) {
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
 
-        echo json_encode(["message" => "Denuncia actualizada"]);
+        echo json_encode(["message" => "Denuncia actualizada exitosamente"]);
         break;
     
     // 📌 Eliminar denuncia

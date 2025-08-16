@@ -6,8 +6,8 @@ import { ContinueButton } from "../../components/buttons/ContinueButton";
 import EastIcon from '@mui/icons-material/East';
 import Categories from "../../pages/home/Categories.json";
 import { PhotoUpload } from "../../components/PhotoUpload";
-import { SendDataModal } from "./modals/sendDataModal";
 import { useNavigate } from "react-router-dom";
+import { SendDataModal } from "./modals/SendDataModal";
 
 export const FormReport = () => {
   const [lat, setLat] = useState("");
@@ -260,7 +260,7 @@ export const FormReport = () => {
           setLong(longitude);
         }}/>
       </Box>
-      <SendDataModal 
+      <SendDataModal
         handleOpenModal={openModal} 
         handleCloseModal={() => setOpenModal(false)} 
         handleConfirmation={handleSendData}
