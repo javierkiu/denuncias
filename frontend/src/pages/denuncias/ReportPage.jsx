@@ -39,8 +39,6 @@ export const ReportPage = () => {
   if (error) return <p>Error al cargar los datos: {error.message}</p>;
   if (reports.length === 0) return <p>No hay denuncias registradas.</p>;
 
-  console.log("Denuncias:", reports.filter((denuncia) => denuncia.id === 1)[0]);
-
   function filtrar_categoria(filtro_categoria, lista) {
     if (!filtro_categoria) return lista;
     return lista.filter((denuncia) =>

@@ -58,6 +58,7 @@ export const NavBar = () => {
               fontSize: {xs: "1.25rem", md: "1.425rem", lg: "1.475rem"},
               fontWeight: 600,
               color: "#fff",
+              cursor: "pointer"
             }}
           >
             Denuncias Ambientales
@@ -86,7 +87,8 @@ export const NavBar = () => {
                 transition: "color 0.2s ease",
                 ":hover": {
                   color: "#FBC02D"
-                }
+                },
+                cursor: "pointer"
               }}
             >
               Home
@@ -107,7 +109,8 @@ export const NavBar = () => {
                 transition: "color 0.2s ease",
                 ":hover": {
                   color: "#FBC02D"
-                }
+                },
+                cursor: "pointer"
               }}
             >
               Ver denuncias
@@ -128,7 +131,8 @@ export const NavBar = () => {
                 transition: "color 0.2s ease",
                 ":hover": {
                   color: "#FBC02D"
-                }
+                },
+                cursor: "pointer"
               }}
             >
               Realizar denuncia
