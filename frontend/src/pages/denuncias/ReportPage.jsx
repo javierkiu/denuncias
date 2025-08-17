@@ -13,11 +13,13 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import { TextField, Box } from "@mui/material";
+import { TextField, Box, Grid } from "@mui/material";
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { Button } from "@mui/material";
+
+
 
 export const ReportPage = () => {
     const [filtro_categoria, setFiltroCategoria] = useState("");
@@ -43,6 +45,12 @@ export const ReportPage = () => {
         );
     }
     
+    function comparar_fechas(fecha1, fecha2) {
+        const date1 = new Date(fecha1);
+        const date2 = new Date(fecha2);
+        return date1.getTime() > date2.getTime();
+    }
+
     function filtrar_menores_fecha(filtro_fecha){
         if (!filtro_fecha) return reports;
         return reports.filter(denuncia =>
@@ -61,64 +69,74 @@ export const ReportPage = () => {
     
 
     return (
-        <div style={{width: "80%", margin: "0 auto", textAlign: "center"}}>
-            <Typography variant="h4" component="h1" >
-                Denuncias Registradas
-            </Typography>
-            <FormControl fullWidth margin="normal">
-                <InputLabel id="filtro_categoria_label">Filtrar por categoría</InputLabel>
-                <Select
-                    labelId="filtro_categoria_label"
-                    id="filtro_categoria"
-                    value={filtro_categoria}
-                    onChange={(e) => setFiltroCategoria(e.target.value)}
-                >
-                    {categorias.map((categoria) => (
-                        <MenuItem key={categoria} value={categoria}>
-                            {categoria}
-                        </MenuItem>
-                        ))
-                    }
-                </Select>
-            </FormControl>
+        <Grid container spacing={2} style={{ padding: '20px', margin: '20px' }} alignItems={"center" } justifyContent={"center"}>
+            {/* Titulo */}
+            <Grid size = {12} textAlign={"center"}>
+                <Typography variant="h4" component="h1" >
+                    Denuncias Registradas
+                </Typography>
+            </Grid>
 
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DatePicker 
-                        value={filtro_fecha ? dayjs(filtro_fecha) : null}
-                        onChange={(newValue) => setFiltroFecha(newValue ? newValue.format('YYYY-MM-DD') : "")}
-                        label="Filtrar por fecha"
-                    />
-            </LocalizationProvider>   
-            <Button 
-                variant="contained" 
-                color="primary" 
-                onClick={() => setFiltroFecha(dayjs().format('YYYY-MM-DD'))}
-            >
-                Sumbit
-            </Button>
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Categoría</TableCell>
-                            <TableCell>Fecha</TableCell>
-                            <TableCell>Descripción</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row, index) => (
-                            <TableRow key={index}>
-                                <TableCell>{row.categoria}</TableCell>
-                                <TableCell>{row.fecha}</TableCell>
-                                <TableCell>{row.descripcion}</TableCell>
+            <Grid size = {{xs: 12, md: 8}} container spacing={2} alignItems={"center"} justifyContent={"center"}>
+                <Grid size = {{xs: 12, md: 4}}>
+                    <FormControl fullWidth margin="normal">
+                        <InputLabel id="filtro_categoria_label">Filtrar por categoría</InputLabel>
+                        <Select
+                            labelId="filtro_categoria_label"
+                            id="filtro_categoria"
+                            value={filtro_categoria}
+                            onChange={(e) => setFiltroCategoria(e.target.value)}
+                        >
+                            {categorias.map((categoria) => (
+                                <MenuItem key={categoria} value={categoria}>
+                                    {categoria}
+                                </MenuItem>
+                                ))
+                            }
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid size = {{xs: 12, md: 4}}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DatePicker 
+                                value={filtro_fecha ? dayjs(filtro_fecha) : null}
+                                onChange={(newValue) => setFiltroFecha(newValue ? newValue.format('YYYY-MM-DD') : "")}
+                                label="Filtrar por fecha"
+                            />
+                    </LocalizationProvider>   
+                </Grid>
+
+                <Button 
+                    variant="contained" 
+                    color="primary" 
+                    onClick={() => setFiltroFecha(dayjs().format('YYYY-MM-DD'))}
+                >
+                    Sumbit
+                </Button>
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Categoría</TableCell>
+                                <TableCell>Fecha</TableCell>
+                                <TableCell>Descripción</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <button onClick={getReports}>Recargar Denuncias</button>
-            <p>Total de denuncias: {reports.length}</p>
-            <p>Última actualización: {new Date().toLocaleString()}</p>
-        </div>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>{row.categoria}</TableCell>
+                                    <TableCell>{row.fecha}</TableCell>
+                                    <TableCell>{row.descripcion}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <button onClick={getReports}>Recargar Denuncias</button>
+                <p>Total de denuncias: {reports.length}</p>
+                <p>Última actualización: {new Date().toLocaleString()}</p>
+            </Grid>
+        </Grid>
     )
 }
