@@ -13,19 +13,20 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import { TextField, Box, Grid } from "@mui/material";
+import { TextField, Box, Grid, IconButton } from "@mui/material";
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import { Button } from "@mui/material";
-
-
+import DeleteIcon from '@mui/icons-material/Delete';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import EditIcon from '@mui/icons-material/Edit';
 
 export const ReportPage = () => {
     const [filtro_categoria, setFiltroCategoria] = useState("");
-    const [filtro_fecha, setFiltroFecha] = useState("");
+    const [filtro_fecha_desde, setFiltroFechaDesde] = useState("");
+    const [filtro_fecha_hasta, setFiltroFechaHasta] = useState("");
     const [filtro_descripcion, setFiltroDescripcion] = useState("");
-    console.log(filtro_fecha)
     const categorias = [
         "Contaminación",
         "Incendios forestales",
@@ -39,32 +40,40 @@ export const ReportPage = () => {
     if (error) return <p>Error al cargar los datos: {error.message}</p>
     if (reports.length === 0) return <p>No hay denuncias registradas.</p>
     
-    function filtrar_categoria(filtro_categoria){
-        return reports.filter(denuncia => 
+    function filtrar_categoria(filtro_categoria, lista) {
+        if (!filtro_categoria) return lista;
+        return lista.filter(denuncia => 
             denuncia.categoria.toLowerCase().includes(filtro_categoria.toLowerCase())
         );
     }
-    
-    function comparar_fechas(fecha1, fecha2) {
-        const date1 = new Date(fecha1);
-        const date2 = new Date(fecha2);
-        return date1.getTime() > date2.getTime();
+
+    function filtrar_por_rango_fechas(desde, hasta, lista) {
+        if (!desde && !hasta) return lista;
+        return lista.filter(denuncia => {
+            const fechaDenuncia = new Date(denuncia.fecha.split(" ")[0]);
+            const fechaDesde = desde ? new Date(desde) : null;
+            const fechaHasta = hasta ? new Date(hasta) : null;
+            if (fechaDesde && fechaHasta) {
+                return fechaDenuncia >= fechaDesde && fechaDenuncia <= fechaHasta;
+            } else if (fechaDesde) {
+                return fechaDenuncia >= fechaDesde;
+            } else if (fechaHasta) {
+                return fechaDenuncia <= fechaHasta;
+            }
+            return true;
+        });
     }
 
-    function filtrar_menores_fecha(filtro_fecha){
-        if (!filtro_fecha) return reports;
-        return reports.filter(denuncia =>
-            new Date(denuncia.fecha.split(" ")[0]) <= new Date(filtro_fecha)
-        );
+    function createData(categoria, fecha, subcategoria) {
+        return { categoria, fecha, subcategoria };
     }
 
+    // Filtrado combinado
+    let filteredReports = filtrar_por_rango_fechas(filtro_fecha_desde, filtro_fecha_hasta, reports);
+    filteredReports = filtrar_categoria(filtro_categoria, filteredReports);
 
-    function createData(categoria, fecha, descripcion) {
-        return { categoria, fecha, descripcion };
-    }
-    const filter_report = filtrar_categoria(filtro_categoria);
-    const rows = filter_report.map(denuncia => 
-        createData(denuncia.categoria, denuncia.fecha.split(" ")[0], denuncia.descripcion)
+    const rows = filteredReports.map(denuncia => 
+        createData(denuncia.categoria, denuncia.fecha.split(" ")[0], denuncia.subcategoria)
     );
     
 
@@ -96,46 +105,62 @@ export const ReportPage = () => {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid size = {{xs: 12, md: 4}}>
+                <Grid size = {{xs: 4, md: 4}}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker 
-                                value={filtro_fecha ? dayjs(filtro_fecha) : null}
-                                onChange={(newValue) => setFiltroFecha(newValue ? newValue.format('YYYY-MM-DD') : "")}
-                                label="Filtrar por fecha"
-                            />
-                    </LocalizationProvider>   
+                        <DatePicker 
+                            value={filtro_fecha_desde ? dayjs(filtro_fecha_desde) : null}
+                            onChange={(newValue) => setFiltroFechaDesde(newValue ? newValue.format('YYYY-MM-DD') : "")}
+                            label="Fecha desde"
+                        />
+                    </LocalizationProvider>
+                </Grid>
+                <Grid size = {{xs: 4, md: 4}}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker 
+                            value={filtro_fecha_hasta ? dayjs(filtro_fecha_hasta) : null}
+                            onChange={(newValue) => setFiltroFechaHasta(newValue ? newValue.format('YYYY-MM-DD') : "")}
+                            label="Fecha hasta"
+                        />
+                    </LocalizationProvider>
                 </Grid>
 
-                <Button 
-                    variant="contained" 
-                    color="primary" 
-                    onClick={() => setFiltroFecha(dayjs().format('YYYY-MM-DD'))}
-                >
-                    Sumbit
-                </Button>
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow>
                                 <TableCell>Categoría</TableCell>
+                                <TableCell>Subcategoría</TableCell>
                                 <TableCell>Fecha</TableCell>
-                                <TableCell>Descripción</TableCell>
+                                <TableCell>Acciones</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {rows.map((row, index) => (
                                 <TableRow key={index}>
                                     <TableCell>{row.categoria}</TableCell>
+                                    <TableCell>{row.subcategoria}</TableCell>
                                     <TableCell>{row.fecha}</TableCell>
-                                    <TableCell>{row.descripcion}</TableCell>
+                                    <TableCell align="center">
+                                        <IconButton aria-label="view" onClick={()=> 1}>
+                                            <OpenInNewIcon />
+                                        </IconButton>                                        <IconButton aria-label="edit">
+                                            <EditIcon />
+                                        </IconButton>                                        <IconButton aria-label="delete">
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
-                <button onClick={getReports}>Recargar Denuncias</button>
-                <p>Total de denuncias: {reports.length}</p>
-                <p>Última actualización: {new Date().toLocaleString()}</p>
+                <Button variant="outlined" onClick={() => {getReports()}}>Recargar Denuncias</Button>
+                <Typography variant="body2" color="textSecondary" align="center" style={{ marginTop: '10px' }}>
+                    Total de denuncias: {filteredReports.length}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" align="center" style={{ marginTop: '10px' }}>
+                    Última actualización: {new Date().toLocaleString()}
+                </Typography>
             </Grid>
         </Grid>
     )
