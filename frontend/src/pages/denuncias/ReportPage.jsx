@@ -13,26 +13,27 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import { Grid, IconButton } from "@mui/material";
+import { Grid, IconButton, Menu } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import ViewReport from "../../components/popups/ViewReport";
-import DeleteReport from "../../components/popups/DeleteReport"
+import DeleteReport from "../../components/popups/DeleteReport";
+import Categories from "../home/Categories.json";
 
 export const ReportPage = () => {
   const [filtro_categoria, setFiltroCategoria] = useState("");
   const [filtro_fecha_desde, setFiltroFechaDesde] = useState("");
   const [filtro_fecha_hasta, setFiltroFechaHasta] = useState("");
-  const categorias = [
-    "Contaminación",
-    "Incendios forestales",
-    "Minería ilegal",
-    "Protección de flora y fauna",
-  ];
-  
+  const [filtro_subcategoria, setFiltroSubcategoria] = useState("");
+
+  function refrescarCategoria(categoria){
+    setFiltroSubcategoria("");
+    setFiltroCategoria(categoria);
+  }
+
   const [getReports, loading, error, reports] = useFetchReports();
 
   if (loading) return <p>Cargando...</p>;
@@ -43,6 +44,15 @@ export const ReportPage = () => {
     if (!filtro_categoria) return lista;
     return lista.filter((denuncia) =>
       denuncia.categoria.toLowerCase().includes(filtro_categoria.toLowerCase())
+    );
+  }
+
+  function filtrar_subcategoria(filtro_subcategoria, lista) {
+    if (!filtro_subcategoria) return lista;
+    return lista.filter((denuncia) =>
+      denuncia.subcategoria
+        .toLowerCase()
+        .includes(filtro_subcategoria.toLowerCase())
     );
   }
 
@@ -74,6 +84,7 @@ export const ReportPage = () => {
     reports
   );
   filteredReports = filtrar_categoria(filtro_categoria, filteredReports);
+  filteredReports = filtrar_subcategoria(filtro_subcategoria, filteredReports);
 
   const rows = filteredReports.map((denuncia) =>
     createData(
@@ -106,25 +117,53 @@ export const ReportPage = () => {
         alignItems={"center"}
         justifyContent={"center"}
       >
-        <Grid size={{ xs: 12, md: 4 }}>
-          <FormControl fullWidth margin="normal">
-            <InputLabel id="filtro_categoria_label">
-              Filtrar por categoría
-            </InputLabel>
-            <Select
-              labelId="filtro_categoria_label"
-              id="filtro_categoria"
-              value={filtro_categoria}
-              onChange={(e) => setFiltroCategoria(e.target.value)}
-            >
-              {categorias.map((categoria) => (
-                <MenuItem key={categoria} value={categoria}>
-                  {categoria}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        <Grid container size= {12}>
+          {/* FILTRO POR CATEGORIA */}
+          <Grid size={6}>
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="filtro_categoria_label">
+                Filtrar por categoría
+              </InputLabel>
+              <Select
+                labelId="filtro_categoria_label"
+                id="filtro_categoria"
+                value={filtro_categoria}
+                onChange={(e) => refrescarCategoria(e.target.value)}
+              >
+                {Categories.map((categoria) => (
+                  <MenuItem key={categoria.category} value={categoria.category}>
+                    {categoria.category}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {/* FILTRO POR SUBCATEGORIA */}
+          <Grid size={6}>
+            <FormControl fullWidth margin="normal" disabled={!filtro_categoria}>
+              <InputLabel id="filtro_subcategoria_label">
+                Filtrar por subcategoría
+              </InputLabel>
+              <Select
+                labelId="filtro_subcategoria_label"
+                id="filtro_subcategoria"
+                value={filtro_subcategoria}
+                onChange={(e) => setFiltroSubcategoria(e.target.value)}
+              >
+                {Categories.find((categoria) => {
+                  return categoria.category.includes(filtro_categoria);
+                }).subcategories.map((sub) => 
+                  <MenuItem key={sub} value={sub}>
+                    {sub}
+                  </MenuItem>
+                )}
+
+              </Select>
+            </FormControl>
+          </Grid>
         </Grid>
+
         <Grid size={{ xs: 4, md: 4 }}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
@@ -169,11 +208,15 @@ export const ReportPage = () => {
                   <TableCell>{row.subcategoria}</TableCell>
                   <TableCell>{row.fecha}</TableCell>
                   <TableCell align="center">
-                    <ViewReport denuncia={reports.filter((denuncia) => denuncia.id === row.id)[0]} />{" "}
+                    <ViewReport
+                      denuncia={
+                        reports.filter((denuncia) => denuncia.id === row.id)[0]
+                      }
+                    />{" "}
                     <IconButton aria-label="edit">
                       <EditIcon />
                     </IconButton>{" "}
-                    <DeleteReport id = {row.id}/>
+                    <DeleteReport id={row.id} />
                   </TableCell>
                 </TableRow>
               ))}
