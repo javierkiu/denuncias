@@ -251,7 +251,7 @@ export const FormReport = () => {
               flexShrink: 0,
             }}
           >
-            <GoBackButton handleBack={handleBack}/>
+            <GoBackButton handleBack={handleBack} isDisabled={formSteps === 1 ? true: false}/>
             <ContinueButton handleNext={handleNext} name= {formSteps === 3 ? "Enviar": "Continuar"}/>
           </Box>
         </Box>
