@@ -18,9 +18,9 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { Button } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ViewReport from "../../components/popups/ViewReport";
+import DeleteReport from "../../components/popups/DeleteReport"
 
 export const ReportPage = () => {
   const [filtro_categoria, setFiltroCategoria] = useState("");
@@ -32,7 +32,7 @@ export const ReportPage = () => {
     "Minería ilegal",
     "Protección de flora y fauna",
   ];
-
+  
   const [getReports, loading, error, reports] = useFetchReports();
 
   if (loading) return <p>Cargando...</p>;
@@ -173,9 +173,7 @@ export const ReportPage = () => {
                     <IconButton aria-label="edit">
                       <EditIcon />
                     </IconButton>{" "}
-                    <IconButton aria-label="delete">
-                      <DeleteIcon />
-                    </IconButton>
+                    <DeleteReport id = {row.id}/>
                   </TableCell>
                 </TableRow>
               ))}
