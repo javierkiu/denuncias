@@ -9,6 +9,7 @@ const CountryBounds = [
   [-5.01, -92.01], // Southwest corner
   [2.26, -75.19],  // Northeast corner
 ]
+
 function LocationMarker({ position }) {
   if (!position) return null;
 

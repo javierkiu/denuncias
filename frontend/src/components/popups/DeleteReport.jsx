@@ -12,7 +12,7 @@ export default function AlertDialog(id1) {
   const id = id1.id;
   const handleDelete = async () => {
     try {
-      await fetch(`${import.meta.env.VITE_BACKEND_URL}/denuncias.php`, {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/denuncias.php`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id }),

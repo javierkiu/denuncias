@@ -47,6 +47,10 @@ switch ($method) {
                 $query .= " AND LOWER(subcategoria) = LOWER(:subcategoria)";
                 $params[':subcategoria'] = $_GET['subcategoria'];
             }
+            if (!empty($_GET['descripcion'])) {
+                $query .= " AND LOWER(descripcion) LIKE LOWER(:descripcion)";
+                $params[':descripcion'] = '%' . $_GET['descripcion'] . '%';
+            }
             if (!empty($_GET['fecha'])) {
                 $query .= " AND DATE(fecha) = :fecha";
                 $params[':fecha'] = $_GET['fecha'];
@@ -56,9 +60,9 @@ switch ($method) {
                 $params[":lat_min"] = floatval($_GET["lat_min"]);
                 $params[":lat_max"] = floatval($_GET["lat_max"]);
             }
-            if (!empty($_GET['lng_min']) && !empty($_GET['lng_min'])) {
+            if (!empty($_GET['lng_min']) && !empty($_GET['lng_max'])) {
                 $query .= " AND longitud BETWEEN :lng_min AND :lng_max";
-                $params[":lng_min"] = floatval($_GET[":lng_min"]);
+                $params[":lng_min"] = floatval($_GET["lng_min"]);
                 $params[":lng_max"] = floatval($_GET["lng_max"]);
             }
 

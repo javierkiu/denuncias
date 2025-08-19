@@ -6,8 +6,8 @@ import { ReportRouter } from "../pages/denuncias/ReportRouter"
 export const AppRouter = () => {
   return (
     <Routes>
-        <Route path="/" element={<HomeRouter/>}/>
-        <Route path="/view-reports" element={<ReportRouter/>}/>
+        <Route index element={<HomeRouter/>}/>
+        <Route path="/view-reports/*" element={<ReportRouter/>}/>
         <Route path="/fill-report" element={<FormRouter/>}/>
     </Routes>
   )

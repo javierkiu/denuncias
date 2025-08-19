@@ -41,7 +41,7 @@ export const PhotoUpload = () => {
       const formData = new FormData();
       formData.append("photo", selectedFile);
 
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/upload.php`, {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/upload.php`, {
         method: 'POST',
         body: formData
       });

@@ -1,6 +1,7 @@
 import { Box, Typography } from "@mui/material"
 import { useNavigate } from "react-router-dom"
-import environmentImage from "../../public/pollution-transparent.png"
+// Usar URL pública en Vite para assets en public
+const environmentImage = "/pollution-transparent.png";
 
 export const NavBar = () => {
   const navigate = useNavigate();

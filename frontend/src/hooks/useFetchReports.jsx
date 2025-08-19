@@ -5,11 +5,11 @@ export const useFetchReports = () => {
     const [error, setError] = useState(null);
     const [reports, setReports] = useState([]);
 
-    const getReports = async() => {
+    const getReports = async () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/denuncias.php`);
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/denuncias.php`);
             if (!response.ok) throw new Error("Error fetching data");
             const result = await response.json();
             setReports(result);

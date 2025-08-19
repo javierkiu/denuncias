@@ -19,8 +19,6 @@ export const FormReport = () => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const navigate = useNavigate();
   const [formSteps, setFormSteps] = useState(1);
-  console.log(lat);
-  console.log(long);
 
   const handleCategoryChange = (event) => {
     setCategory(event.target.value);
@@ -29,12 +27,14 @@ export const FormReport = () => {
 
   const handleNext = () => {
     if (!category || !subcategory) return;
+    
     if (formSteps === 3 ) {
       if(description.length > 0) {
         setOpenModal(true);
       }
       return;
     }
+    
     setFormSteps((prev) => prev + 1);
   }
 
@@ -43,12 +43,50 @@ export const FormReport = () => {
     setFormSteps((prev) => prev - 1);
   }
 
-  const handleSendData = () => {
-    setIsConfirmed(true);
-    setTimeout(() => {
-      navigate("/view-reports");
-      setOpenModal(false);
-    }, 2000);
+  const handleSendData = async () => {
+    try {
+      // Validar que todos los campos estén llenos
+      if (!category || !subcategory || !description || !lat || !long) {
+        alert("Por favor completa todos los campos obligatorios");
+        return;
+      }
+
+      // Crear el objeto de datos
+      const denunciaData = {
+        categoria: category,
+        subcategoria: subcategory,
+        descripcion: description,
+        latitud: lat,
+        longitud: long,
+        fecha: new Date().toISOString().split('T')[0]
+      };
+
+      // Enviar al backend
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/denuncias.php`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(denunciaData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al crear la denuncia');
+      }
+
+      const result = await response.json();
+      
+      // Mostrar confirmación y navegar
+      setIsConfirmed(true);
+      setTimeout(() => {
+        navigate("/view-reports");
+        setOpenModal(false);
+      }, 2000);
+
+    } catch (error) {
+      alert(`Error al crear la denuncia: ${error.message}`);
+    }
   }
 
   const handleChange = (e) => {
@@ -260,12 +298,12 @@ export const FormReport = () => {
           setLong(longitude);
         }}/>
       </Box>
-      <SendDataModal
-        handleOpenModal={openModal} 
-        handleCloseModal={() => setOpenModal(false)} 
-        handleConfirmation={handleSendData}
-        isConfirmed={isConfirmed}
-      />
+             <SendDataModal
+         handleOpenModal={openModal} 
+         handleCloseModal={() => setOpenModal(false)} 
+                   handleConfirmation={handleSendData}
+         isConfirmed={isConfirmed}
+       />
     </Box>
   )
 }
