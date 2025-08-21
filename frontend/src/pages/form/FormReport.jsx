@@ -17,6 +17,8 @@ export const FormReport = () => {
   const [description, setDescription] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [photoUrl, setPhotoUrl] = useState(null);
   const navigate = useNavigate();
   const [formSteps, setFormSteps] = useState(1);
 
@@ -30,6 +32,9 @@ export const FormReport = () => {
     
     if (formSteps === 3 ) {
       if(description.length > 0) {
+        if (!lat || !long) return;
+        console.log(photoUrl);
+        console.log(selectedFile);
         setOpenModal(true);
       }
       return;
@@ -45,23 +50,34 @@ export const FormReport = () => {
 
   const handleSendData = async () => {
     try {
-      // Validar que todos los campos estén llenos
-      if (!category || !subcategory || !description || !lat || !long) {
-        alert("Por favor completa todos los campos obligatorios");
-        return;
-      }
+      let finalPhotoUrl = photoUrl;
 
-      // Crear el objeto de datos
+      if (selectedFile && !photoUrl) {
+        const formData = new FormData();
+        formData.append("photo", selectedFile);
+
+        const uploadResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/upload.php`, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!uploadResponse.ok) throw new Error("Error uploading the photo");
+
+        const result = await uploadResponse.json();
+        finalPhotoUrl = result.url;
+        setPhotoUrl(finalPhotoUrl); 
+      }
       const denunciaData = {
         categoria: category,
         subcategoria: subcategory,
         descripcion: description,
         latitud: lat,
         longitud: long,
-        fecha: new Date().toISOString().split('T')[0]
+        fecha: new Date().toISOString().split('T')[0],
+        foto_url: finalPhotoUrl
       };
+      console.log(finalPhotoUrl);
 
-      // Enviar al backend
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/denuncias.php`, {
         method: 'POST',
         headers: {
@@ -76,16 +92,15 @@ export const FormReport = () => {
       }
 
       const result = await response.json();
-      
-      // Mostrar confirmación y navegar
       setIsConfirmed(true);
+      
       setTimeout(() => {
         navigate("/view-reports");
         setOpenModal(false);
       }, 2000);
 
     } catch (error) {
-      alert(`Error al crear la denuncia: ${error.message}`);
+      console.error("Error al crear la denuncia: ", error);
     }
   }
 
@@ -231,7 +246,7 @@ export const FormReport = () => {
                 >
                   Foto(opcional)
                 </Typography>
-                <PhotoUpload />
+                <PhotoUpload selectedFile={selectedFile} setSelectedFile={setSelectedFile} />
               </>
             )}
             {formSteps === 3 && (
@@ -298,12 +313,12 @@ export const FormReport = () => {
           setLong(longitude);
         }}/>
       </Box>
-             <SendDataModal
-         handleOpenModal={openModal} 
-         handleCloseModal={() => setOpenModal(false)} 
-                   handleConfirmation={handleSendData}
-         isConfirmed={isConfirmed}
-       />
+      <SendDataModal
+        handleOpenModal={openModal} 
+        handleCloseModal={() => setOpenModal(false)} 
+        handleConfirmation={handleSendData}
+        isConfirmed={isConfirmed}
+      />
     </Box>
   )
 }

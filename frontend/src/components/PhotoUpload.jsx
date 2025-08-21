@@ -2,8 +2,7 @@ import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useRef, useState } from "react";
 import ClearIcon from '@mui/icons-material/Clear';
 
-export const PhotoUpload = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
+export const PhotoUpload = ({ selectedFile, setSelectedFile }) => {
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
   const fileInputRef = useRef(null);
@@ -28,42 +27,6 @@ export const PhotoUpload = () => {
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       setSelectedFile(files[0]);
-    }
-  }
-
-  const uploadFile = async () => {
-    if (!selectedFile) return;
-
-    setUploading(true);
-    setUploadStatus(null);
-
-    try {
-      const formData = new FormData();
-      formData.append("photo", selectedFile);
-
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/upload.php`, {
-        method: 'POST',
-        body: formData
-      });
-      if (response.ok) {
-        const result = await response.json();
-        setUploadStatus({
-          type: "success",
-          message: "Image uploaded successfully",
-          data: result
-        })
-      } else {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `Upload failed: ${response.statusText}`);
-      }
-    } catch (error) {
-        setUploadStatus({
-          type: "error",
-          message: error.message
-        });
-        console.error("Error uploading image to the backend: ", error);
-    } finally {
-      setUploading(false);
     }
   }
 

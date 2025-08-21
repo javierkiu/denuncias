@@ -7,11 +7,13 @@ import {
   DialogContentText,
   DialogTitle,
   Typography,
+  IconButton
 } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { IconButton } from "@mui/material";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
 
-export default function ViewReport(denuncia) {
+export default function ViewReport({denuncia}) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -21,6 +23,11 @@ export default function ViewReport(denuncia) {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const lat = parseFloat(denuncia.latitud);
+  const lng = parseFloat(denuncia.longitud);
+  const hasLocation = !isNaN(lat) && !isNaN(lng);
+
   return (
     <div>
       {/* Botón que abre el pop-up */}
@@ -34,20 +41,58 @@ export default function ViewReport(denuncia) {
         <DialogContent dividers>
           <DialogContentText component="div">
             <Typography variant="body1" gutterBottom>
-              <strong>ID:</strong> {denuncia.denuncia.id}
+              <strong>ID:</strong> {denuncia.id}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              <strong>Categoría:</strong> {denuncia.denuncia.categoria}
+              <strong>Categoría:</strong> {denuncia.categoria}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              <strong>Subcategoría:</strong> {denuncia.denuncia.subcategoria}
+              <strong>Subcategoría:</strong> {denuncia.subcategoria}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              <strong>Fecha:</strong> {denuncia.denuncia.fecha}
+              <strong>Fecha:</strong> {denuncia.fecha}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              <strong>Descripción:</strong> {denuncia.denuncia.descripcion}
+              <strong>Descripción:</strong> {denuncia.descripcion}
             </Typography>
+            {
+              denuncia.foto_url && (
+                <>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Imagen:</strong>
+                  </Typography>
+                  <img 
+                    src={denuncia.foto_url}
+                    alt="Foto denuncia"
+                    style={{ width: "100%", maxHeight: "200px", objectFit: "cover"}}
+                  />
+                </>
+              )
+            }
+            {
+              hasLocation && (
+                <>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Ubicación:</strong>
+                  </Typography>
+                  <div style={{ height: "300px", width: "100%", marginTop: "8px" }}>
+                    <MapContainer
+                      center={[lat, lng]}
+                      zoom={15}
+                      style={{ height: "100%", width: "100%", borderRadius: "8px" }}
+                    >
+                      <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      />
+                      <Marker position={[lat, lng]}>
+                        <Popup>Denuncia #{denuncia.id}</Popup>
+                      </Marker>
+                    </MapContainer>
+                  </div>
+                </>
+              )
+            }
           </DialogContentText>
         </DialogContent>
         <DialogActions>

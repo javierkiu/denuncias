@@ -110,8 +110,8 @@ export const ReportPage = () => {
     });
   }
 
-  function createData(id, categoria, fecha, subcategoria, descripcion) {
-    return { id, categoria, fecha, subcategoria, descripcion };
+  function createData(id, categoria, fecha, subcategoria, descripcion, foto_url) {
+    return { id, categoria, fecha, subcategoria, descripcion, foto_url };
   }
 
   // Filtrado combinado
@@ -137,7 +137,8 @@ export const ReportPage = () => {
       denuncia.categoria,
       denuncia.fecha.split(" ")[0],
       denuncia.subcategoria,
-      denuncia.descripcion
+      denuncia.descripcion,
+      denuncia.foto_url
     )
   );
 
