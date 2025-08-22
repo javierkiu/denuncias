@@ -20,8 +20,11 @@ export const NavBar = () => {
   return (
     <Box
       sx={{
-        bgcolor: "#2E7D32",
-        padding: ".8rem 1rem"
+        bgcolor: "#d8ffdaff",
+        padding: "1rem 2rem",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000,
       }}
     >
       <Box
@@ -47,7 +50,7 @@ export const NavBar = () => {
             src={environmentImage}
             alt="Environment Image"
             sx={{
-              width: 42,
+              width: 50,
               objectFit: "cover",
               borderRadius: 2,
               bgColor: "green"
@@ -56,10 +59,13 @@ export const NavBar = () => {
           <Typography
             sx={{
               fontFamily: "'Poppins', sans-serif",
-              fontSize: {xs: "1.25rem", md: "1.425rem", lg: "1.475rem"},
+              fontSize: "1rem",
               fontWeight: 600,
-              color: "#fff",
-              cursor: "pointer"
+              color: "green",
+              display: {xs: "none", md: "block"},
+              textTransform: "uppercase",
+              letterSpacing: ".1rem",
+
             }}
           >
             Denuncias Ambientales
@@ -84,7 +90,7 @@ export const NavBar = () => {
                 fontFamily: "'Poppins', sans-serif",
                 fontSize: {xs: ".9rem", md: ".95rem", lg: "1rem"},
                 fontWeight: 500,
-                color: "#fff",
+                color: "green",
                 transition: "color 0.2s ease",
                 ":hover": {
                   color: "#FBC02D"
@@ -106,7 +112,7 @@ export const NavBar = () => {
                 fontFamily: "'Poppins', sans-serif",
                 fontSize: {xs: ".9rem", md: ".95rem", lg: "1rem"},
                 fontWeight: 500,
-                color: "#fff",
+                color: "green",
                 transition: "color 0.2s ease",
                 ":hover": {
                   color: "#FBC02D"
@@ -128,7 +134,7 @@ export const NavBar = () => {
                 fontFamily: "'Poppins', sans-serif",
                 fontSize: {xs: ".9rem", md: ".95rem", lg: "1rem"},
                 fontWeight: 500,
-                color: "#fff",
+                color: "green",
                 transition: "color 0.2s ease",
                 ":hover": {
                   color: "#FBC02D"
