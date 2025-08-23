@@ -65,7 +65,7 @@ export const NavBar = () => {
               display: {xs: "none", md: "block"},
               textTransform: "uppercase",
               letterSpacing: ".1rem",
-
+              cursor: "pointer"
             }}
           >
             Denuncias Ambientales
