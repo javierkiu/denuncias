@@ -10,9 +10,9 @@ import { Button } from "@mui/material";
 
 export const HomePage = () => {
   const navigate = useNavigate();
-  const handleReportCategory = () => {
-    navigate("/fill-report");
-  };
+  const handleReportCategory = (category) => {
+    navigate('/fill-report', {state: category});
+  }
 
   return (
     <Grid container spacing={5} justifyContent={"center"}>

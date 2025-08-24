@@ -6,13 +6,14 @@ import { ContinueButton } from "../../components/buttons/ContinueButton";
 import EastIcon from '@mui/icons-material/East';
 import Categories from "../../pages/home/Categories.json";
 import { PhotoUpload } from "../../components/PhotoUpload";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { SendDataModal } from "./modals/SendDataModal";
 
 export const FormReport = () => {
+  const { state } = useLocation();
   const [lat, setLat] = useState("");
   const [long, setLong] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(state || null);
   const [subcategory, setSubCategory] = useState("");
   const [description, setDescription] = useState("");
   const [openModal, setOpenModal] = useState(false);
