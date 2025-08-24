@@ -1,202 +1,142 @@
-import { Box, Typography } from "@mui/material"
-import contaminacion from "../../assets/contaminacion_aire.jpg"
-import incendio_forestal  from "../../assets/incendio_forestal.jpeg"
-import mineria_ilegal from "../../assets/mineria_ilegal.jpeg"
-import flora_fauna from "../../assets/flora_fauna.jpg"
-import { useNavigate } from "react-router-dom"
+import { Box, Grid, Typography } from "@mui/material";
+import contaminacion from "../../assets/contaminacion_aire.jpg";
+import incendio_forestal from "../../assets/incendio_forestal.jpeg";
+import mineria_ilegal from "../../assets/mineria_ilegal.jpeg";
+import flora_fauna from "../../assets/flora_fauna.jpg";
+import { useNavigate } from "react-router-dom";
+import Divider from "@mui/material/Divider";
+import CardReport from "../../components/CardReport";
+import { Button } from "@mui/material";
 
 export const HomePage = () => {
-
   const navigate = useNavigate();
   const handleReportCategory = () => {
-    navigate('/fill-report');
-  }
+    navigate("/fill-report");
+  };
 
   return (
-    <Box
-      sx={{
-        bgcolor: "#F1F8F6",
-        width: "100%",
-        maxWidth: "100%",
-        height: "100vp",
-        margin: "0 auto",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          marginInline: {xs: "0rem", md: "5rem", lg:"10rem"},
-          paddingTop: {xs: "1rem", sm: "2rem", md: "2.5rem", lg:"3rem"},
-          paddingInline: {xs: "1rem", sm: "2rem", md: "2.5rem", lg:"3rem"}
-        }}
-      >
-        <Box>
-          <Typography
-            sx={{
-              fontFamily: "'Poppins', sans-serif",
-              fontSize: {xs: "1rem", md: "1.125rem", lg: "1.25rem"},
-              fontWeight: 400,
-              color: "#000",
-            }}
-          >
-            Nuestra plataforma te permite reportar contaminación, incendios forestales, minería ilegal y otras amenazas al ambiente para que las autoridades puedan actuar a tiempo.
-          </Typography>
-        </Box>
-        <Box>
-        <Typography
-            sx={{
-              fontFamily: "'Poppins', sans-serif",
-              fontSize: {xs: "1.3rem", md: "1.375rem", lg: "1.5rem"},
-              fontWeight: 600,
-              color: "#000",
-            }}
-          >
-            Categorías de denuncias:
-          </Typography>
-        </Box>
+    <Grid container spacing={5} justifyContent={"center"}>
+      <Grid size={12} sx={{ padding: 0, height: "400px" }}>
         <Box
           sx={{
-            display: "grid",
-            gridTemplateColumns: {xs: "repeat(1, 1fr)", sm: "repeat(1, 1fr)", md: "repeat(1, 1fr)", lg:"repeat(2, 1fr)" },
-            gap: 2,
-            padding: 2
+            backgroundImage: `url(${incendio_forestal})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            position: "relative",
           }}
         >
+          {/* FONDO OSCURO */}
           <Box
+            width={"100%"}
+            height={"400px"}
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 1
+              backgroundColor: "black",
+              opacity: 0.8,
+              top: 0,
             }}
-          >
-            <Typography
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                fontSize: {xs: "1rem", md: "1.125rem", lg: "1.25rem"},
-                fontWeight: 600,
-                color: "#2E7D32",
-              }}
-            >
-              Contaminación
-            </Typography>
-            <Box 
-              onClick={handleReportCategory}
-              component="img"
-              src={contaminacion}
-              alt="contaminacion_imagen"
-              sx={{
-                height: 500,
-                width: 400,
-                objectFit: "cover",
-                borderRadius: ".5rem",
-                cursor: "pointer"
-              }}
-            />
-          </Box>
+          />
 
+          {/* CONTENIDO ENCIMA */}
           <Box
+            width={"100%"}
+            height={"100%"}
             sx={{
+              position: "absolute",
+              top: 0,
               display: "flex",
               flexDirection: "column",
+              justifyContent: "center",
+              alignContent: "center",
               alignItems: "center",
-              gap: 1
+              gap: 2,
             }}
           >
             <Typography
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                fontSize: {xs: "1rem", md: "1.125rem", lg: "1.25rem"},
-                fontWeight: 600,
-                color: "#D84315",
-              }}
+              variant={"h4"}
+              component={"h1"}
+              textAlign={"center"}
+              color="white"
+              fontWeight={"bold"}
             >
-              Incendios forestales
+              Denuncias ambientales
             </Typography>
-            <Box 
-              onClick={handleReportCategory}
-              component="img"
-              src={incendio_forestal}
-              alt="incendios_forestales_imagen"
-              sx={{
-                height: 500,
-                width: 400,
-                objectFit: "cover",
-                borderRadius: ".5rem",
-                cursor: "pointer",
-              }}
-            />
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 1
-            }}
-          >
             <Typography
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                fontSize: {xs: "1rem", md: "1.125rem", lg: "1.25rem"},
-                fontWeight: 600,
-                color: "#6D4C41",
-              }}
+              variant={"body2"}
+              component={"h1"}
+              textAlign={"center"}
+              color="white"
             >
-              Minería ilegal
+              Nuestra plataforma te permite reportar contaminación, incendios
+              forestales, minería ilegal y otras amenazas al ambiente para que
+              las autoridades puedan actuar a tiempo.
             </Typography>
-            <Box 
-              onClick={handleReportCategory}
-              component="img"
-              src={mineria_ilegal}
-              alt="mineria_ilegal_imagen"
-              sx={{
-                height: 500,
-                width: 400,
-                objectFit: "cover",
-                borderRadius: ".5rem",
-                cursor: "pointer",
-              }}
-            />
-          </Box>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 1
-            }}
-          >
-            <Typography
-              sx={{
-                fontFamily: "'Poppins', sans-serif",
-                fontSize: {xs: "1rem", md: "1.125rem", lg: "1.25rem"},
-                fontWeight: 600,
-                color: "#43A047",
-              }}
+            <Button
+              variant="contained"
+              sx={{ width: "200px" }}
+              color="success"
+              href="#categorias"
             >
-              Protección de fauna y flora
-            </Typography>
-            <Box 
-              onClick={handleReportCategory}
-              component="img"
-              src={flora_fauna}
-              alt="flora_fauna_imagen"
-              sx={{
-                height: 500,
-                width: 400,
-                objectFit: "cover",
-                borderRadius: ".5rem",
-                cursor: "pointer",
-              }}
-            />
+              Ver categorías
+            </Button>
           </Box>
         </Box>
-      </Box>
-    </Box>
-  )
-}
+      </Grid>
+
+      {/* CATEGORIAS */}
+      <Grid container size={10} paddingInline={"50px"} id="categorias">
+        <Grid size={12}>
+          <Typography
+            textAlign={"center"}
+            variant="h5"
+            fontWeight={"bold"}
+            color="#2e7d32"
+            letterSpacing={3}
+          >
+            Reporta tu denuncia en cualquiera de estas categorías!
+          </Typography>
+          <Divider sx={{ borderColor: "#2e7d32" }} />
+        </Grid>
+
+        {/* Tarjeta Contaminacion */}
+        <Grid size={3}>
+          <CardReport
+                  image={contaminacion}
+                  title="Contaminación"
+                  description="Denuncia casos de basura en la vía pública, ríos o mares, o contaminación de aire."
+                  onClick={handleReportCategory}
+          />
+        </Grid>
+
+        {/* Tarjeta Incendios forestales */}
+        <Grid size={3}>
+          <CardReport
+                  image={incendio_forestal}
+                  title="Incendio forestal"
+                  description="Denuncia casos como quema de pastizales, incendios activos o fuego provocados por actividades humanas."
+                  onClick={handleReportCategory}
+          />
+        </Grid>
+
+        {/* Tarjeta Mineria ilegal */}
+        <Grid size={3}>
+          <CardReport
+                  image={mineria_ilegal}
+                  title="Mineria ilegal"
+                  description="Denuncia casos como uso de maquinarias en río, extracción de minerales sin permiso, tala asociada a minería y similares."
+                  onClick={handleReportCategory}
+          />  
+        </Grid>
+
+        {/* Tarjeta Proteccion de flora y fauna */}
+        <Grid size={3}>
+          <CardReport
+                  image={flora_fauna}
+                  title="Flora y fauna"
+                  description="Denuncia casos como caza ilegal, tráfico de especies, tala ilegal de árboles o daño a áreas protegidas."
+                  onClick={handleReportCategory}
+          />            
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+};

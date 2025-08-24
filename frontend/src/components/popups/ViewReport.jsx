@@ -10,8 +10,9 @@ import {
   IconButton
 } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import CloseIcon from "@mui/icons-material/Close";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
+import {Box} from "@mui/material";
 
 export default function ViewReport({denuncia}) {
   const [open, setOpen] = React.useState(false);
@@ -36,8 +37,13 @@ export default function ViewReport({denuncia}) {
       </IconButton>
 
       {/* El Pop-up */}
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Detalles</DialogTitle>
+      <Dialog open={open} onClose={handleClose} fullWidth>
+        <Box sx={{display:"flex", justifyContent:"space-between"}}>
+          <DialogTitle>Detalles</DialogTitle>
+          <IconButton onClick={handleClose}>
+            <CloseIcon style={{marginRight:'5px', width:"2rem", height:"2rem"}}/>
+          </IconButton>
+        </Box>
         <DialogContent dividers>
           <DialogContentText component="div">
             <Typography variant="body1" gutterBottom>
@@ -96,8 +102,7 @@ export default function ViewReport({denuncia}) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancelar</Button>
-          <Button onClick={handleClose} autoFocus>
+            <Button onClick={handleClose} autoFocus style={{fontWeight: "bold"}}>
             Aceptar
           </Button>
         </DialogActions>
