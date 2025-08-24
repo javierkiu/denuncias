@@ -103,7 +103,7 @@ export const HomePage = () => {
                   image={contaminacion}
                   title="Contaminación"
                   description="Denuncia casos de basura en la vía pública, ríos o mares, o contaminación de aire."
-                  onClick={handleReportCategory}
+                  onClick={()=>handleReportCategory("Contaminación")}
           />
         </Grid>
 
@@ -113,7 +113,7 @@ export const HomePage = () => {
                   image={incendio_forestal}
                   title="Incendio forestal"
                   description="Denuncia casos como quema de pastizales, incendios activos o fuego provocados por actividades humanas."
-                  onClick={handleReportCategory}
+                  onClick={()=>handleReportCategory("Incendios forestales")}
           />
         </Grid>
 
@@ -123,7 +123,7 @@ export const HomePage = () => {
                   image={mineria_ilegal}
                   title="Mineria ilegal"
                   description="Denuncia casos como uso de maquinarias en río, extracción de minerales sin permiso, tala asociada a minería y similares."
-                  onClick={handleReportCategory}
+                  onClick={()=>handleReportCategory("Minería ilegal")}
           />  
         </Grid>
 
@@ -133,7 +133,7 @@ export const HomePage = () => {
                   image={flora_fauna}
                   title="Flora y fauna"
                   description="Denuncia casos como caza ilegal, tráfico de especies, tala ilegal de árboles o daño a áreas protegidas."
-                  onClick={handleReportCategory}
+                  onClick={()=>handleReportCategory("Protección de flora y fauna")}
           />            
         </Grid>
       </Grid>
