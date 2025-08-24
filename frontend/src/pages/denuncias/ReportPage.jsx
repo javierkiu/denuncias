@@ -34,12 +34,12 @@ export const ReportPage = () => {
   const [filtro_lat_max, setFiltroLatMax] = useState("");
   const [filtro_lng_min, setFiltroLngMin] = useState("");
   const [filtro_lng_max, setFiltroLngMax] = useState("");
-  
+
   // Estados para el modal de editar
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [denunciaToEdit, setDenunciaToEdit] = useState(null);
 
-  function refrescarCategoria(categoria){
+  function refrescarCategoria(categoria) {
     setFiltroSubcategoria("");
     setFiltroCategoria(categoria);
   }
@@ -94,23 +94,34 @@ export const ReportPage = () => {
 
   function filtrar_por_ubicacion(lat_min, lat_max, lng_min, lng_max, lista) {
     if (!lat_min && !lat_max && !lng_min && !lng_max) return lista;
-    
+
     return lista.filter((denuncia) => {
       let cumpleLat = true;
       let cumpleLng = true;
-      
+
       if (lat_min && lat_max) {
-        cumpleLat = denuncia.latitud >= parseFloat(lat_min) && denuncia.latitud <= parseFloat(lat_max);
+        cumpleLat =
+          denuncia.latitud >= parseFloat(lat_min) &&
+          denuncia.latitud <= parseFloat(lat_max);
       }
       if (lng_min && lng_max) {
-        cumpleLng = denuncia.longitud >= parseFloat(lng_min) && denuncia.longitud <= parseFloat(lng_max);
+        cumpleLng =
+          denuncia.longitud >= parseFloat(lng_min) &&
+          denuncia.longitud <= parseFloat(lng_max);
       }
-      
+
       return cumpleLat && cumpleLng;
     });
   }
 
-  function createData(id, categoria, fecha, subcategoria, descripcion, foto_url) {
+  function createData(
+    id,
+    categoria,
+    fecha,
+    subcategoria,
+    descripcion,
+    foto_url
+  ) {
     return { id, categoria, fecha, subcategoria, descripcion, foto_url };
   }
 
@@ -124,10 +135,10 @@ export const ReportPage = () => {
   filteredReports = filtrar_subcategoria(filtro_subcategoria, filteredReports);
   filteredReports = filtrar_descripcion(filtro_descripcion, filteredReports);
   filteredReports = filtrar_por_ubicacion(
-    filtro_lat_min, 
-    filtro_lat_max, 
-    filtro_lng_min, 
-    filtro_lng_max, 
+    filtro_lat_min,
+    filtro_lat_max,
+    filtro_lng_min,
+    filtro_lng_max,
     filteredReports
   );
 
@@ -173,13 +184,13 @@ export const ReportPage = () => {
       </Grid>
 
       <Grid
-        size={{ xs: 12, md: 8 }}
+        size={{ xs: 12, lg: 8 }}
         container
         spacing={2}
         alignItems={"center"}
         justifyContent={"center"}
       >
-        <Grid container size= {12}>
+        <Grid container size={12}>
           {/* FILTRO POR CATEGORIA */}
           <Grid size={6}>
             <FormControl fullWidth margin="normal">
@@ -215,11 +226,11 @@ export const ReportPage = () => {
               >
                 {Categories.find((categoria) => {
                   return categoria.category.includes(filtro_categoria);
-                }).subcategories.map((sub) => 
+                }).subcategories.map((sub) => (
                   <MenuItem key={sub} value={sub}>
                     {sub}
                   </MenuItem>
-                )}
+                ))}
               </Select>
             </FormControl>
           </Grid>
@@ -318,9 +329,11 @@ export const ReportPage = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Categoría</TableCell>
-                <TableCell>Subcategoría</TableCell>
+                <TableCell sx={{ display: { xs: "none", sm: "table-cell" } }}>Subcategoría</TableCell>
                 <TableCell>Fecha</TableCell>
-                <TableCell>Descripción</TableCell>
+                <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
+                  Descripción
+                </TableCell>
                 <TableCell>Acciones</TableCell>
               </TableRow>
             </TableHead>
@@ -328,16 +341,16 @@ export const ReportPage = () => {
               {rows.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell>{row.categoria}</TableCell>
-                  <TableCell>{row.subcategoria}</TableCell>
+                  <TableCell sx={{ display: { xs: "none", sm: "table-cell" } }}>{row.subcategoria}</TableCell>
                   <TableCell>{row.fecha}</TableCell>
-                  <TableCell>
-                    <Typography 
-                      variant="body2" 
-                      sx={{ 
-                        maxWidth: 200, 
-                        overflow: 'hidden', 
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
+                  <TableCell sx={{ display: { xs: "none", md: "table-cell" } }}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        maxWidth: 200,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       {row.descripcion}
@@ -349,9 +362,15 @@ export const ReportPage = () => {
                         reports.filter((denuncia) => denuncia.id === row.id)[0]
                       }
                     />{" "}
-                    <IconButton 
+                    <IconButton
                       aria-label="edit"
-                      onClick={() => handleEditClick(reports.filter((denuncia) => denuncia.id === row.id)[0])}
+                      onClick={() =>
+                        handleEditClick(
+                          reports.filter(
+                            (denuncia) => denuncia.id === row.id
+                          )[0]
+                        )
+                      }
                       color="primary"
                     >
                       <EditIcon />
