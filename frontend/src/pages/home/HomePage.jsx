@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom"
 export const HomePage = () => {
 
   const navigate = useNavigate();
-  const handleReportCategory = () => {
-    navigate('/fill-report');
+  const handleReportCategory = (category) => {
+    navigate('/fill-report', {state: category});
   }
 
   return (
@@ -83,7 +83,7 @@ export const HomePage = () => {
               Contaminación
             </Typography>
             <Box 
-              onClick={handleReportCategory}
+              onClick={() => handleReportCategory("Contaminación")}
               component="img"
               src={contaminacion}
               alt="contaminacion_imagen"
@@ -116,7 +116,7 @@ export const HomePage = () => {
               Incendios forestales
             </Typography>
             <Box 
-              onClick={handleReportCategory}
+              onClick={() => handleReportCategory("Incendios forestales")}
               component="img"
               src={incendio_forestal}
               alt="incendios_forestales_imagen"
@@ -149,7 +149,7 @@ export const HomePage = () => {
               Minería ilegal
             </Typography>
             <Box 
-              onClick={handleReportCategory}
+              onClick={() => handleReportCategory("Minería ilegal")}
               component="img"
               src={mineria_ilegal}
               alt="mineria_ilegal_imagen"
@@ -179,10 +179,10 @@ export const HomePage = () => {
                 color: "#43A047",
               }}
             >
-              Protección de fauna y flora
+              Protección de flora y fauna
             </Typography>
             <Box 
-              onClick={handleReportCategory}
+              onClick={() => handleReportCategory("Protección de flora y fauna")}
               component="img"
               src={flora_fauna}
               alt="flora_fauna_imagen"
